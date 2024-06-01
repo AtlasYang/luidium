@@ -1,0 +1,104 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    width: 100%;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 10px 90px;
+    user-select: none;
+}
+
+.titleSection {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+}
+
+.titleSection p {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--color-normal);
+}
+
+.menuList {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    min-width: 300px;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+.menuItem {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0px 10px;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: var(--color-gray);
+    transition: all 0.3s;
+}
+
+.menuItem p {
+    padding: 0 10px;
+}
+
+.menuItem:hover {
+    color: var(--primary);
+}
+
+.menuItem:hover::after {
+    width: 100%;
+}
+
+.menuItem::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 2px;
+    background: var(--primary);
+    transition: width 0.3s;
+}
+
+.menuItem.active::after {
+    width: 100%;
+}
+
+.menuItem.active p {
+    color: var(--primary);
+}
+
+
+.userCircle {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: outline 0.3s;
+}
+
+.userCircle p {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--color-contrast);
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    transition: border-radius 0.3s;
+}
+
+.avatar:hover {
+    border-radius: 30%;
+}

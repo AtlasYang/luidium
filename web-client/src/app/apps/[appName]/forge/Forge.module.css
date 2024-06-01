@@ -1,0 +1,106 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    gap: 20px;
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: 120px;
+}
+
+.blockCreator {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-evenly;
+    padding: 10px 20px;
+    height: 100%;
+    width: 320px;
+    border-radius: 10px;
+    border: var(--block-highlight-border);
+    background-color: var(--block-highlight-background);
+    box-shadow: var(--block-normal-box-shadow);
+    transition: background-color 0.3s;
+}
+
+.blockCreator:hover {
+    background-color: var(--block-highlight-background-tint);
+}
+
+.blockCreator h3 {
+    font-size: 1.0rem;
+    font-weight: 400;
+}
+
+.blockCreator p {
+    font-size: 0.8em;
+    font-weight: 300;
+    color: var(--color-gray);
+}
+
+.body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: calc(100% - 150px);
+}
+
+.loadingWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 20px;
+    height: 50px;
+    padding: 20px 20px;
+}
+
+.title p {
+    font-size: 1.2rem;
+    font-weight: 300;
+}
+
+.title span {
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--primary);
+}
+
+.blockList {
+    display: flex;
+    width: 100%;
+    max-height: calc(100% - 50px);
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 15px;
+    padding: 20px 10px 20px 10px;
+
+    overflow-y: auto;
+}
+
+.block {
+    display: flex;
+    width: 100%;
+}

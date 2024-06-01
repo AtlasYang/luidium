@@ -1,0 +1,212 @@
+services:
+  main-db:
+    image: scylladb/scylla
+    container_name: main-db
+    ports:
+      - ${MAIN_DB_PORT_BINDING}
+    volumes:
+      - ${MAIN_DB_VOLUME_MOUNT}
+    command: ${MAIN_DB_COMMAND}
+    healthcheck:
+      test: ["CMD", "cqlsh", "-e", "DESCRIBE KEYSPACES"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+
+  sentinel-db:
+    image: postgres:16-alpine
+    container_name: sentinel-db
+    ports:
+      - ${SENTINEL_DB_PORT_BINDING}
+    volumes:
+      - ${SENTINEL_DB_VOLUME_MOUNT}
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    healthcheck:
+      test:
+        ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+
+  main-storage:
+    image: minio/minio
+    container_name: main-storage
+    volumes:
+      - ${MAIN_STORAGE_VOLUME_MOUNT}
+    ports:
+      - ${MAIN_STORAGE_PORT_BINDING}
+      - ${MAIN_STORAGE_PORT_BINDING_2}
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    command: ${MAIN_STORAGE_COMMAND}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "${MAIN_STORAGE_HEALTHCHECK_URL}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  main-server:
+    build:
+      context: ./main-server
+      dockerfile: Dockerfile
+      network: host
+    container_name: main-server
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ${MAIN_SERVER_VOLUME_MOUNT}
+    ports:
+      - ${MAIN_SERVER_PORT_BINDING}
+    environment:
+      - MAIN_SERVER_LISTEN_HOST=${MAIN_SERVER_LISTEN_HOST}
+      - SENTINEL_SERVER_HOST=${SENTINEL_SERVER_HOST}
+      - BUILDER_SERVER_HOST=${BUILDER_SERVER_HOST}
+      - STORAGE_SERVER_HOST=${STORAGE_SERVER_HOST}
+      - HOST_SERVER_HOST=${HOST_SERVER_HOST}
+      - KAFKA_BROKER_HOST=${KAFKA_BROKER_HOST}
+      - KAFKA_TOPIC=${KAFKA_TOPIC}
+      - MINIO_ENDPOINT=${MINIO_ENDPOINT}
+      - MAIN_DB_HOST=${MAIN_DB_HOST}
+      - APP_DOMAIN_1=${APP_DOMAIN_1}
+      - APP_DOMAIN_2=${APP_DOMAIN_2}
+      - ZONE_ID_1=${ZONE_ID_1}
+      - ZONE_ID_2=${ZONE_ID_2}
+      - CLOUDFLARE_TOKEN=${CLOUDFLARE_TOKEN}
+      - IP_ADDRESS=${IP_ADDRESS}
+      - NGINX_CONF_FILE_1=${NGINX_CONF_FILE_1}
+      - NGINX_CONF_FILE_2=${NGINX_CONF_FILE_2}
+      - SSL_CERT_FILE=${SSL_CERT_FILE}
+    depends_on:
+      main-db:
+        condition: service_healthy
+      sentinel-db:
+        condition: service_healthy
+
+  storage-server:
+    build:
+      context: ./storage-server
+      dockerfile: Dockerfile
+      network: host
+    container_name: storage-server
+    mem_limit: ${STORAGE_SERVER_MEM_LIMIT}
+    ports:
+      - ${STORAGE_SERVER_PORT_BINDING}
+    environment:
+      - MINIO_ENDPOINT=${MINIO_ENDPOINT}
+      - MINIO_ACCESS_KEY_ID=${MINIO_ACCESS_KEY_ID}
+      - MINIO_SECRET_ACCESS_KEY=${MINIO_SECRET_ACCESS_KEY}
+    depends_on:
+      main-storage:
+        condition: service_healthy
+
+  sentinel-server:
+    build:
+      context: ./sentinel-server
+      dockerfile: Dockerfile
+      network: host
+    container_name: sentinel-server
+    ports:
+      - ${SENTINEL_SERVER_PORT_BINDING}
+    environment:
+      - SENTINEL_DB_CONNECTION=${SENTINEL_DB_CONNECTION}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+    depends_on:
+      main-db:
+        condition: service_healthy
+      sentinel-db:
+        condition: service_healthy
+
+  builder-server:
+    build:
+      context: ./builder-server
+      dockerfile: Dockerfile
+      network: host
+    container_name: builder-server
+    ports:
+      - ${BUILDER_SERVER_PORT_BINDING}
+    environment:
+      - MINIO_ENDPOINT=${MINIO_ENDPOINT}
+      - MINIO_ACCESS_KEY_ID=${MINIO_ACCESS_KEY_ID}
+      - MINIO_SECRET_ACCESS_KEY=${MINIO_SECRET_ACCESS_KEY}
+      - MAIN_SERVER_HOST=${MAIN_SERVER_HOST}
+      - SENTINEL_SERVER_HOST=${SENTINEL_SERVER_HOST}
+      - KAFKA_BROKER_HOST=${KAFKA_BROKER_HOST}
+      - KAFKA_CONSUMER_GROUP=${KAFKA_CONSUMER_GROUP}
+      - KAFKA_TOPIC=${KAFKA_TOPIC}
+      - WORKER_COUNT=${WORKER_COUNT}
+    volumes:
+      - ${DOCKER_SOCKET_BINDING}
+    depends_on:
+      main-db:
+        condition: service_healthy
+      sentinel-db:
+        condition: service_healthy
+      main-storage:
+        condition: service_healthy
+
+  host-server:
+    build:
+      context: ./host-server
+      dockerfile: Dockerfile
+      network: host
+    container_name: host-server
+    network_mode: host
+    depends_on:
+      - main-server
+
+  web-client:
+    build:
+      context: ./web-client
+      dockerfile: Dockerfile
+      network: host
+    container_name: web-client
+    ports:
+      - ${WEB_CLIENT_PORT_BINDING}
+    depends_on:
+      - main-server
+      - storage-server
+
+  web-landing:
+    build:
+      context: ./web-landing
+      dockerfile: Dockerfile
+      network: host
+    container_name: web-landing
+    ports:
+      - ${WEB_LANDING_PORT_BINDING}
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.0.1
+    container_name: zookeeper
+    ports:
+      - ${ZOOKEEPER_PORT_BINDING}
+    environment:
+      ZOOKEEPER_CLIENT_PORT: ${ZOOKEEPER_CLIENT_PORT}
+      ZOOKEEPER_TICK_TIME: ${ZOOKEEPER_TICK_TIME}
+
+  broker:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: broker
+    ports:
+      - ${BROKER_PORT_BINDING}
+    environment:
+      - KAFKA_NODE_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=${KAFKA_ZOOKEEPER_CONNECT}
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP}
+      - KAFKA_ADVERTISED_LISTENERS=${KAFKA_ADVERTISED_LISTENERS}
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=${KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR}
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=${KAFKA_TRANSACTION_STATE_LOG_MIN_ISR}
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=${KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR}
+      - KAFKA_LOG_DIRS=${KAFKA_LOG_DIRS}
+      - KAFKA_PROCESS_ROLES=${KAFKA_PROCESS_ROLES}
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=${KAFKA_CONTROLLER_QUORUM_VOTERS}
+      - KAFKA_LISTENERS=${KAFKA_LISTENERS}
+      - KAFKA_INTER_BROKER_LISTENER_NAME=${KAFKA_INTER_BROKER_LISTENER_NAME}
+      - KAFKA_CONTROLLER_LISTENER_NAMES=${KAFKA_CONTROLLER_LISTENER_NAMES}
+      - CLUSTER_ID=${CLUSTER_ID}
+    depends_on:
+      - zookeeper

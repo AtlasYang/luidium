@@ -1,0 +1,20 @@
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    height: fit-content;
+    border-radius: 8px;
+    background: linear-gradient(96deg, rgba(0, 53, 255, 0.51) 0%, #4B00FF 100%);
+    color: var(--color-contrast);
+    font-size: 0.8rem;
+    font-weight: 300;
+    padding: 6px 24px;
+    transition: all 0.3s;
+    cursor: pointer;
+    user-select: none;
+}
+
+.button:hover {
+    opacity: 0.9;
+}

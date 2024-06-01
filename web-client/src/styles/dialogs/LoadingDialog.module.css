@@ -1,0 +1,15 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 30px;
+    font-weight: 400;
+    user-select: none;
+}
+
+.container p {
+    font-size: 1.0rem;
+    font-weight: 300;
+}

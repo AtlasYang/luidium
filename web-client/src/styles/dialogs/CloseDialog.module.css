@@ -1,0 +1,68 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 360px;
+    background-color: #FFFFFF;
+    padding: 20px 24px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.container h3 {
+    font-size: 1.0rem;
+    font-weight: 500;
+    color: var(--color-normal);
+    margin-bottom: 10px;
+}
+
+.container p {
+    font-size: 0.8rem;
+    font-weight: 300;
+    color: var(--color-normal);
+    margin-bottom: 15px;
+}
+
+.buttonWrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 10px;
+    width: 100%;
+    align-items: flex-end;
+    margin-top: 20px;
+}
+
+.buttonLeft {
+    display: flex;
+    width: fit-content;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--block-highlight-background);
+    color: var(--primary);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+.buttonRight {
+    display: flex;
+    width: fit-content;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--primary);
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+.buttonLeft:hover {
+    background-color: var(--primary-transparent);
+}
+
+.buttonRight:hover {
+    opacity: 0.8;
+}

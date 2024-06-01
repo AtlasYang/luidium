@@ -1,0 +1,69 @@
+.container {
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    width: 40px;
+    border-radius: 50%;
+    gap: 5px;
+
+    transition: all 0.3s;
+    overflow: hidden;
+
+    background: rgba(93, 158, 255, 0.09);
+    backdrop-filter: blur(5px);
+    z-index: 1;
+}
+
+.container:hover {
+    width: 280px;
+    border-radius: 15px;
+    padding: 5px 10px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+
+    width: 200px;
+    overflow: hidden;
+}
+
+.name {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--color-normal);
+    white-space: nowrap;
+}
+
+.email {
+    font-size: 0.8rem;
+    font-weight: 300;
+    color: var(--color-gray);
+    white-space: nowrap;
+}
+
+.signOut {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 7px;
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+
+.signOut:hover {
+    background: var(--background-normal);
+}

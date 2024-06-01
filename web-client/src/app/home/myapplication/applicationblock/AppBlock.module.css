@@ -1,0 +1,107 @@
+.container {
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 30px;
+    height: 60px;
+    background-color: var(--background-normal);
+    border-radius: 5px;
+    color: var(--color-normal);
+    user-select: none;
+    box-sizing: border-box;
+
+    background: rgba(93, 158, 255, 0.09);
+    padding: 0 20px;
+    transition: all 0.3s;
+
+    background: var(--block-normal-background);
+    box-shadow: var(--block-normal-box-shadow);
+    backdrop-filter: var(--block-normal-backdrop-filter);
+    border: var(--block-normal-border);
+}
+
+.container:hover {
+    background: rgba(93, 158, 255, 0.05);
+}
+
+.container.expanded {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.container.expanded:hover {
+    background: rgba(93, 158, 255, 0.05);
+}
+
+.container.selected {
+    background: rgba(93, 158, 255, 0.09);
+    border: 1px solid rgba(75, 0, 255, 0.05);
+}
+
+.section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    min-width: 150px;
+}
+
+.versionSection {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+}
+
+.versionSection p {
+    font-size: 0.7rem;
+    font-weight: 300;
+    color: var(--color-placeholder);
+}
+
+.versionSection span {
+    font-size: 0.7rem;
+    font-weight: 300;
+    color: var(--color-normal);
+}
+
+.imageContainer {
+    position: relative;
+    display: flex;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+    opacity: 0.8;
+    background-color: white;
+}
+
+.names {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-around;
+}
+
+.names h3 {
+    font-size: 1.0rem;
+    font-weight: 300;
+    color: var(--color-normal);
+}
+
+.names p {
+    font-size: 0.8rem;
+    font-weight: 300;
+    color: var(--color-placeholder);
+}
+
+@media screen and (max-width: 768px) {}

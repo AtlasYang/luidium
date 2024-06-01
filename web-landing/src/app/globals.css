@@ -1,0 +1,13 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+    /* font-family: 'LexendGiga', sans-serif; */
+}
+
+@font-face {
+    font-family: "LexendGiga";
+    font-weight: 400;
+    src: url("/font/LexendGiga.ttf") format("truetype");
+}

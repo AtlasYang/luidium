@@ -1,0 +1,67 @@
+@-webkit-keyframes rotating
+
+/* Safari and Chrome */
+    {
+    from {
+        -webkit-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    to {
+        -webkit-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rotating {
+    from {
+        -ms-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+
+    to {
+        -ms-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes gradient-pulse {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.rotating {
+    -webkit-animation: rotating 0.8s linear infinite;
+    -moz-animation: rotating 0.8s linear infinite;
+    -ms-animation: rotating 0.8s linear infinite;
+    -o-animation: rotating 0.8s linear infinite;
+    animation: rotating 0.8s linear infinite;
+}
+
+.loader {
+    background: linear-gradient(135deg, #00B4FF, #0080FF, #0035FF, #0080FF, #00B4FF);
+    background-size: 400% 400%;
+    border-radius: 50%;
+    -webkit-animation: rotating 1.2s linear infinite, gradient-pulse 3s ease infinite;
+    -moz-animation: rotating 1.2s linear infinite, gradient-pulse 3s ease infinite;
+    -ms-animation: rotating 1.2s linear infinite, gradient-pulse 3s ease infinite;
+    -o-animation: rotating 1.2s linear infinite, gradient-pulse 3s ease infinite;
+    animation: rotating 1.2s linear infinite, gradient-pulse 3s ease infinite;
+}

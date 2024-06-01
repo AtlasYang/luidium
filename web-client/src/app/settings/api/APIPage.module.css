@@ -1,0 +1,126 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    gap: 20px;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 5px;
+}
+
+.section h1 {
+    font-size: 1.2rem;
+    font-weight: 400;
+}
+
+.section p {
+    font-size: 0.9rem;
+    font-weight: 300;
+}
+
+.tokenList {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 5px;
+}
+
+.token {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: var(--block-highlight-background);
+}
+
+.token p {
+    font-size: 0.8rem;
+    font-weight: 300;
+}
+
+.token .spacer {
+    flex: 1;
+}
+
+.textButton {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: var(--primary);
+    cursor: pointer;
+    border: none;
+    outline: none;
+    transition: opacity 0.3s;
+}
+
+.textButton p {
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: var(--color-contrast);
+}
+
+.textButton:hover {
+    opacity: 0.8;
+}
+
+.copyButton {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 5px 5px;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: var(--block-highlight-background);
+    transition: background-color 0.3s;
+}
+
+.copyButton:hover {
+    background-color: white;
+}
+
+.deleteButton {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    background-color: var(--color-error);
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.deleteButton p {
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: var(--color-contrast);
+}
+
+.deleteButton:hover {
+    opacity: 0.8;
+}

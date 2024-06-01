@@ -1,0 +1,48 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    gap: 20px;
+}
+
+.logContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 30px;
+
+    background-color: #000;
+    border-radius: 10px;
+    white-space: pre-wrap;
+    overflow-y: auto;
+}
+
+.log {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 20px;
+    width: 100%;
+    padding: 10px 0;
+
+    color: #FFF;
+    border-bottom: 0.3px solid #ffffff76;
+}
+
+.level {
+    width: 72px;
+}
+
+.message {
+    width: 700px;
+}
+
+.log pre {
+    white-space: pre-wrap;
+    overflow-y: auto;
+    margin: 0;
+}

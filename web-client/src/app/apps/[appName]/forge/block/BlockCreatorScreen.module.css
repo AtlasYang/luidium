@@ -1,0 +1,235 @@
+.container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    /* width: 85%; */
+    max-width: 960px;
+    border-radius: 10px;
+    padding: 30px 50px;
+    background-color: var(--background-normal);
+    box-shadow: var(--shadow-normal);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.container h2 {
+    font-size: 1.4rem;
+    font-weight: 400;
+    margin-bottom: 20px;
+}
+
+.container h3 {
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin-bottom: 10px;
+}
+
+.container textarea {
+    width: 60%;
+    height: fit-content;
+    padding: 12px 16px;
+    border: none;
+    border-bottom: 1px solid var(--border-normal);
+    resize: none;
+    font-weight: 400;
+    font-size: 0.8rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.container textarea:focus {
+    outline: none;
+}
+
+.container textarea::placeholder {
+    color: var(--gray);
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 10px;
+    margin-bottom: 32px;
+
+    max-height: 180px;
+    overflow: auto;
+}
+
+.header img {
+    opacity: 0.7;
+}
+
+.blockType {
+    display: flex;
+    flex-shrink: 0;
+    flex-grow: 1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+    border-radius: 5px;
+    padding: 15px 20px;
+    background-color: var(--block-highlight-background);
+    transition: background-color 0.3s;
+    cursor: pointer;
+    user-select: none;
+}
+
+.blockType:hover {
+    background-color: var(--block-highlight-background-tint);
+}
+
+.blockType.selected {
+    background-color: var(--block-highlight-background-tint);
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin: 0;
+    gap: 5px;
+}
+
+.info h3 {
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin: 0;
+}
+
+.info p {
+    font-size: 0.8em;
+    font-weight: 300;
+    color: var(--gray);
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 10px;
+    height: calc(100% - 150px);
+}
+
+.section {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 100%;
+    height: 60px;
+}
+
+.subSection {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 5px;
+}
+
+.subSection h3 {
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin: 0;
+}
+
+.subSection p {
+    font-size: 0.9em;
+    font-weight: 300;
+    color: var(--gray);
+}
+
+.input {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 16px;
+    border: 1px solid var(--gray);
+    font-size: 0.8rem;
+    font-weight: 400;
+    width: 40%;
+    height: fit-content;
+    border: none;
+    border-bottom: 1px solid var(--border-normal);
+    outline: none;
+}
+
+.input:focus {
+    outline: none;
+}
+
+.input::placeholder {
+    color: var(--gray);
+    font-weight: 400;
+}
+
+.primaryButton {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--primary);
+    color: var(--color-contrast);
+    border-radius: 5px;
+    border: none;
+    margin-top: 60px;
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.3s;
+}
+
+.primaryButton:disabled {
+    opacity: 0.5;
+}
+
+.primaryButton:disabled:hover {
+    opacity: 0.5;
+}
+
+.primaryButton:hover {
+    opacity: 0.8;
+}
+
+.closeButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.checkboxWrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 3px 0;
+    width: 100%;
+}
+
+.checkboxWrapper:hover span {
+    opacity: 1;
+}
+
+.checkboxWrapper p {
+    font-size: 0.8rem;
+    font-weight: 300;
+    color: var(--gray);
+}
+
+.checkboxWrapper span {
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: var(--gray);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.checkbox {
+    border: 1px solid var(--gray);
+    border-radius: 10px;
+    cursor: pointer;
+}

@@ -1,0 +1,169 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    gap: 20px;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+}
+
+.main h1 {
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+
+.main h2 {
+    font-size: 1.3rem;
+    font-weight: 300;
+}
+
+.main p {
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: var(--color-gray);
+}
+
+.main p span {
+    font-weight: 400;
+    color: var(--primary);
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 20px;
+}
+
+.bodyHeader {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 20px;
+}
+
+.versionList {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 20px;
+}
+
+.version {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 20px;
+    padding: 0px 10px;
+}
+
+.version span {
+    font-size: 1.0rem;
+    font-weight: 400;
+    color: var(--primary);
+}
+
+.textButton {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    height: 30px;
+    padding: 0 16px;
+    border-radius: 5px;
+    background-color: var(--primary);
+    border: none;
+    outline: none;
+    cursor: pointer;
+    opacity: 0.4;
+    transition: all 0.3s;
+}
+
+.textButton p {
+    font-size: 0.8rem;
+    font-weight: 300;
+    color: var(--color-contrast);
+}
+
+.textButton:hover {
+    opacity: 1;
+}
+
+.createModal input {
+    width: 100%;
+    height: 30px;
+    padding: 0 10px;
+    border-radius: 5px;
+    border: 1px solid var(--border-gray);
+    outline: none;
+}
+
+.createModal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--block-normal-background);
+    border: var(--block-normal-border);
+    padding: 20px;
+    gap: 20px;
+    border-radius: 5px;
+    box-shadow: var(--shadow-normal);
+}
+
+.createModal h1 {
+    font-size: 1.4rem;
+    font-weight: 400;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    gap: 10px;
+}
+
+.deleteButton {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    height: 30px;
+    padding: 0 16px;
+    border-radius: 5px;
+    background-color: red;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    opacity: 0.4;
+    transition: all 0.3s;
+}
+
+.deleteButton p {
+    font-size: 0.8rem;
+    font-weight: 300;
+    color: var(--color-contrast);
+}
+
+.deleteButton:hover {
+    opacity: 1;
+}

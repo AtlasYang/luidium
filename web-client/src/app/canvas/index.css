@@ -1,0 +1,64 @@
+/* .builder-flow .react-flow__node {
+    width: 150px;
+    border-radius: 5px;
+    padding: 10px;
+    color: #555;
+    border: 1px solid #ddd;
+    text-align: center;
+    font-size: 12px;
+}
+
+.builder-flow .react-flow__node-customnode {
+    background: #e6e6e9;
+    border: 1px solid #ddd;
+} */
+
+.react-flow__node-custominput .react-flow__handle {
+    background: #e6e6e9;
+}
+
+.builder-flow .react-flow__node-custominput {
+    background: #fff;
+}
+
+
+.builder-flow .react-flow__handle-connecting {
+    background: #ff6060;
+}
+
+.builder-flow .react-flow__handle-valid {
+    background: #55dd99;
+}
+
+.builder-flow .react-flow__handle {
+    width: 20px;
+    height: 1px;
+    border-radius: 0;
+    border: 0.4px solid #FFFFFF;
+    opacity: 0.2;
+}
+
+.builder-flow .react-flow__handle-bottom {
+    top: auto;
+    left: 50%;
+    bottom: 0px;
+    transform: translate(-50%, 0);
+}
+
+.builder-flow .react-flow__handle-top {
+    left: 50%;
+    top: 0px;
+    transform: translate(-50%, 0);
+}
+
+.builder-flow .react-flow__handle-left {
+    top: 50%;
+    left: -4px;
+    transform: translate(0, -50%);
+}
+
+.builder-flows .react-flow__handle-right {
+    right: -4px;
+    top: 50%;
+    transform: translate(0, -50%);
+}
