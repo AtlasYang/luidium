@@ -50,6 +50,8 @@ func DownloadBlockAsset(client *minio.Client, userID uuid.UUID, applicationID uu
 }
 
 func BuildImageFromBlockAsset(client *minio.Client, userID uuid.UUID, applicationID uuid.UUID, blockID uuid.UUID, bucketName string, version string, blockName string) bool {
+	defer os.RemoveAll("./assets/" + bucketName + "/" + version + "/" + blockName)
+
 	dockerClient := session.GetDockerClient()
 	imageName := bucketName + "-" + version + "-" + blockName
 
@@ -86,7 +88,6 @@ func BuildImageFromBlockAsset(client *minio.Client, userID uuid.UUID, applicatio
 
 	// dockerClient.PruneImages(docker.PruneImagesOptions{})
 	dockerClient.RemoveImageExtended(imageName, docker.RemoveImageOptions{Force: true, NoPrune: false})
-	os.RemoveAll("./assets/" + bucketName + "/" + version + "/" + blockName)
 	GenerateBuildImageSuccessLog(userID, applicationID, blockID, bucketName, version, blockName)
 	return true
 }

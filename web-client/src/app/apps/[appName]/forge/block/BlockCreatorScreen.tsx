@@ -180,7 +180,7 @@ const BLOCK_FRAMEWORKS: { [key: string]: any[] } = {
       content:
         "A JavaScript library for building user interfaces. Declarative, efficient, and flexible",
       image: reactImage,
-      defaultPort: 3000,
+      defaultPort: 80,
     },
     {
       id: "svelte-web",
@@ -196,7 +196,7 @@ const BLOCK_FRAMEWORKS: { [key: string]: any[] } = {
       content:
         "A full-stack, isomorphic Rust web framework leveraging fine-grained reactivity to build declarative user interfaces.",
       image: leptosImage,
-      defaultPort: 80,
+      defaultPort: 8080,
     },
   ],
 };
