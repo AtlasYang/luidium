@@ -87,5 +87,9 @@ export async function copyTemplate({
     object_key: `${version}/${blockName}`,
     template_id: templateId,
   };
-  await mainInstance.post(`/file/copy_template`, payload);
+  try {
+    await mainInstance.post(`/file/copy_template`, payload);
+  } catch (e) {
+    console.error(e);
+  }
 }

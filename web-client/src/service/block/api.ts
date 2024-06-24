@@ -38,8 +38,18 @@ export async function createBlock({ blockData }: { blockData: Block }) {
 }
 
 export async function getBlock(blockId: string) {
-  const result = await mainInstance.get(`/block/${blockId}`);
-  return result.data as Block;
+  try {
+    const result = await mainInstance.get(`/block/${blockId}`);
+    return {
+      success: true,
+      content: result.data as Block,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      content: error.response.data.content,
+    };
+  }
 }
 
 export async function getBlocksByApplicationIdAndVersion({

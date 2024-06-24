@@ -270,8 +270,8 @@ export default function BlockCreatorScreen({
       return;
     }
     setLoadingText("Pulling code from official template...");
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    const newBlock = await getBlock(blockId);
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    const { content: newBlock } = await getBlock(blockId);
     const newConf: LuidiumConfig = {
       block_name: newBlock.name,
       framework: framework,
@@ -280,7 +280,7 @@ export default function BlockCreatorScreen({
       environment_variables: [],
       ignore_files: [`${newBlock.name}-image.tar`],
     };
-    if (framework) await handleCopyFromTemplate();
+    if (framework !== "") await handleCopyFromTemplate();
     setLoadingText("Uploading Block configuration...");
     await uploadLuidiumConfig({
       bucketName: application.app_name,

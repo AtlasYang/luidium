@@ -1,11 +1,15 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"strconv"
+	"sync"
+	"syscall"
 	"time"
 
 	"luidium.com/builder-server/lib"
@@ -14,6 +18,7 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/minio/minio-go/v7"
 )
 
 func main() {
@@ -21,87 +26,50 @@ func main() {
 	router := gin.Default()
 	minioClient := session.GetStorageClient()
 
+	kafkaBroker := os.Getenv("KAFKA_BROKER_HOST")
+	consumerGroup := os.Getenv("KAFKA_CONSUMER_GROUP")
+	kafkaTopic := os.Getenv("KAFKA_TOPIC")
+	workerCount, err := strconv.Atoi(os.Getenv("WORKER_COUNT"))
+	if err != nil {
+		log.Fatalf("Invalid WORKER_COUNT: %v", err)
+	}
+
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers": os.Getenv("KAFKA_BROKER_HOST"),
-		"group.id":          os.Getenv("KAFKA_CONSUMER_GROUP"),
+		"bootstrap.servers": kafkaBroker,
+		"group.id":          consumerGroup,
 		"auto.offset.reset": "earliest",
 	})
 	if err != nil {
-		panic(err)
+		log.Fatalf("Failed to create Kafka consumer: %v", err)
 	}
+	defer c.Close()
 
-	c.SubscribeTopics([]string{os.Getenv("KAFKA_TOPIC")}, nil)
-	workerCount, err := strconv.Atoi(os.Getenv("WORKER_COUNT"))
-	if err != nil {
-		panic(err)
-	}
+	c.SubscribeTopics([]string{kafkaTopic}, nil)
 
 	msgChan := make(chan *kafka.Message, workerCount)
+	var wg sync.WaitGroup
 
 	for i := 0; i < workerCount; i++ {
-		go func() {
-			for msg := range msgChan {
-				var req lib.StorageServerRequest
-				err := json.Unmarshal(msg.Value, &req)
-				if err != nil {
-					lib.UpdateBlockStatus(req.BlockID.String(), lib.BlockStatusFailed)
-					continue
-				}
-
-				if req.Action == lib.BlockActionStop {
-					success := lib.StopAndRemoveContainer(req.UserID, req.ApplicationID, req.BlockID, req.Bucket, req.Version, req.Blockname)
-					if !success {
-						lib.UpdateBlockStatus(req.BlockID.String(), lib.BlockStatusFailed)
-						continue
-					}
-					lib.UpdateBlockStatus(req.BlockID.String(), lib.BlockStatusStopped)
-				}
-
-				if req.Action == lib.BlockActionRemove {
-					lib.StopAndRemoveContainerAndVolume(req.UserID, req.ApplicationID, req.BlockID, req.Bucket, req.Version, req.Blockname)
-				}
-
-				if req.Action == lib.BlockActionBuild || req.Action == lib.BlockActionBuildAndRun {
-					lib.UpdateBlockStatus(req.BlockID.String(), lib.BlockStatusBuilding)
-					success := lib.DownloadBlockAsset(minioClient, req.UserID, req.ApplicationID, req.BlockID, req.Bucket, req.Version, req.Blockname)
-					if !success {
-						lib.UpdateBlockStatus(req.BlockID.String(), lib.BlockStatusFailed)
-						continue
-					}
-
-					success = lib.BuildImageFromBlockAsset(minioClient, req.UserID, req.ApplicationID, req.BlockID, req.Bucket, req.Version, req.Blockname)
-					if !success {
-						lib.UpdateBlockStatus(req.BlockID.String(), lib.BlockStatusFailed)
-						continue
-					}
-
-					if req.Action == lib.BlockActionBuild {
-						lib.UpdateBlockStatus(req.BlockID.String(), lib.BlockStatusReady)
-					} else {
-						lib.UpdateBlockStatus(req.BlockID.String(), lib.BlockStatusPending)
-					}
-				}
-
-				if req.Action == lib.BlockActionRun || req.Action == lib.BlockActionBuildAndRun {
-					success := lib.DownloadAndRunBlockImage(minioClient, req.UserID, req.ApplicationID, req.BlockID, req.Bucket, req.Version, req.Blockname)
-					if !success {
-						lib.UpdateBlockStatus(req.BlockID.String(), lib.BlockStatusFailed)
-						continue
-					}
-					lib.UpdateBlockStatus(req.BlockID.String(), lib.BlockStatusRunning)
-				}
-
-			}
-		}()
+		wg.Add(1)
+		go worker(msgChan, minioClient, &wg)
 	}
+
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
 
 	go func() {
 		for {
-			msg, err := c.ReadMessage(time.Second)
-			if err == nil {
-				msgChan <- msg
-			} else if !err.(kafka.Error).IsTimeout() {
-				fmt.Printf("Consumer error: %v (%v)\n", err, msg)
+			select {
+			case <-ctx.Done():
+				close(msgChan)
+				return
+			default:
+				msg, err := c.ReadMessage(time.Second)
+				if err == nil {
+					msgChan <- msg
+				} else if !err.(kafka.Error).IsTimeout() {
+					log.Printf("Consumer error: %v (%v)\n", err, msg)
+				}
 			}
 		}
 	}()
@@ -143,5 +111,87 @@ func main() {
 		AllowMethods: []string{"PUT", "POST"},
 	}))
 
-	router.Run(":8080")
+	server := &http.Server{
+		Addr:    ":8080",
+		Handler: router,
+	}
+
+	go func() {
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("HTTP server ListenAndServe: %v", err)
+		}
+	}()
+
+	<-ctx.Done()
+	stop()
+	log.Println("Shutting down gracefully...")
+
+	ctxShutDown, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := server.Shutdown(ctxShutDown); err != nil {
+		log.Fatalf("HTTP server Shutdown: %v", err)
+	}
+
+	wg.Wait()
+	log.Println("Server exited")
+}
+
+func worker(msgChan chan *kafka.Message, minioClient *minio.Client, wg *sync.WaitGroup) {
+	defer wg.Done()
+	for msg := range msgChan {
+		var req lib.StorageServerRequest
+		err := json.Unmarshal(msg.Value, &req)
+		if err != nil {
+			lib.UpdateBlockStatus(req.BlockID.String(), lib.BlockStatusFailed)
+			continue
+		}
+
+		handleRequest(req, minioClient)
+	}
+}
+
+func handleRequest(req lib.StorageServerRequest, minioClient *minio.Client) {
+	if req.Action == lib.BlockActionStop {
+		success := lib.StopAndRemoveContainer(req.UserID, req.ApplicationID, req.BlockID, req.Bucket, req.Version, req.Blockname)
+		if !success {
+			lib.UpdateBlockStatus(req.BlockID.String(), lib.BlockStatusFailed)
+			return
+		}
+		lib.UpdateBlockStatus(req.BlockID.String(), lib.BlockStatusStopped)
+	}
+
+	if req.Action == lib.BlockActionRemove {
+		lib.StopAndRemoveContainerAndVolume(req.UserID, req.ApplicationID, req.BlockID, req.Bucket, req.Version, req.Blockname)
+	}
+
+	if req.Action == lib.BlockActionBuild || req.Action == lib.BlockActionBuildAndRun {
+		lib.UpdateBlockStatus(req.BlockID.String(), lib.BlockStatusBuilding)
+		success := lib.DownloadBlockAsset(minioClient, req.UserID, req.ApplicationID, req.BlockID, req.Bucket, req.Version, req.Blockname)
+		if !success {
+			lib.UpdateBlockStatus(req.BlockID.String(), lib.BlockStatusFailed)
+			return
+		}
+
+		success = lib.BuildImageFromBlockAsset(minioClient, req.UserID, req.ApplicationID, req.BlockID, req.Bucket, req.Version, req.Blockname)
+		if !success {
+			lib.UpdateBlockStatus(req.BlockID.String(), lib.BlockStatusFailed)
+			return
+		}
+
+		if req.Action == lib.BlockActionBuild {
+			lib.UpdateBlockStatus(req.BlockID.String(), lib.BlockStatusReady)
+		} else {
+			lib.UpdateBlockStatus(req.BlockID.String(), lib.BlockStatusPending)
+		}
+	}
+
+	if req.Action == lib.BlockActionRun || req.Action == lib.BlockActionBuildAndRun {
+		success := lib.DownloadAndRunBlockImage(minioClient, req.UserID, req.ApplicationID, req.BlockID, req.Bucket, req.Version, req.Blockname)
+		if !success {
+			lib.UpdateBlockStatus(req.BlockID.String(), lib.BlockStatusFailed)
+			return
+		}
+		lib.UpdateBlockStatus(req.BlockID.String(), lib.BlockStatusRunning)
+	}
 }

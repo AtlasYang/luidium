@@ -1,52 +1,108 @@
 .main {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #f0f0f0;
+    background-color: #FFFFFF;
     gap: 50px;
 }
 
-@-webkit-keyframes rotating
-
-/* Safari and Chrome */
-    {
-    from {
-        -webkit-transform: rotate(0deg);
-        -o-transform: rotate(0deg);
-        transform: rotate(0deg);
-    }
-
-    to {
-        -webkit-transform: rotate(360deg);
-        -o-transform: rotate(360deg);
-        transform: rotate(360deg);
-    }
+.topBar {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 5px 30px;
+    background-color: #FFFFFF;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
 }
 
-@keyframes rotating {
-    from {
-        -ms-transform: rotate(0deg);
-        -moz-transform: rotate(0deg);
-        -webkit-transform: rotate(0deg);
-        -o-transform: rotate(0deg);
-        transform: rotate(0deg);
-    }
-
-    to {
-        -ms-transform: rotate(360deg);
-        -moz-transform: rotate(360deg);
-        -webkit-transform: rotate(360deg);
-        -o-transform: rotate(360deg);
-        transform: rotate(360deg);
-    }
+.spacer {
+    flex: 1;
 }
 
-.rotating {
-    -webkit-animation: rotating 1.4s ease-in-out infinite;
-    -moz-animation: rotating 1.4s ease-in-out infinite;
-    -ms-animation: rotating 1.4s ease-in-out infinite;
-    -o-animation: rotating 1.4s ease-in-out infinite;
-    animation: rotating 1.4s ease-in-out infinite;
+.icon {
+    opacity: 0.2;
+    transition: opacity 0.4s;
+}
+
+.icon:hover {
+    opacity: 1;
+}
+
+.primaryButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background: linear-gradient(274deg, #5F00FF 0%, #00B4FF 100%);
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 300;
+    cursor: pointer;
+    transition: opacity 0.4s;
+}
+
+.primaryButton:hover {
+    opacity: 0.8;
+}
+
+.section1 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    width: 100%;
+}
+
+.section1 .sub1 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.section1 .sub1 .videoContainer {
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 950px;
+    height: 500px;
+}
+
+.section1 .sub1 .videoContainer video {
+    width: 1000px;
+}
+
+.section1 .sub2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.section1 .sub2 h1 {
+    font-size: 32px;
+    font-weight: 500;
+    background: linear-gradient(93deg, #5F00FF 0%, #00B4FF 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.section1 .sub2 p {
+    font-size: 16px;
+    font-weight: 300;
+    text-align: center;
 }
